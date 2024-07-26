@@ -21,7 +21,7 @@ func initConfig() {
 	default:
 		viper.SetConfigName("config")
 	}
-
+	fmt.Println("Testbug")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()

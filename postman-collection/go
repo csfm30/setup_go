@@ -1,0 +1,28 @@
+{
+	"info": {
+		"_postman_id": "67a6eea8-1ebd-4ee0-9534-7a6d073e22e2",
+		"name": "Setup_go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33346358"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:7001/testgo/api/v1/test",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"gg\",\n    \"first_name_eng\" : \"fa\",\n    \"first_name_th\" : \"game\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:7001/testgo/api/v1/test"
+			},
+			"response": []
+		}
+	]
+}

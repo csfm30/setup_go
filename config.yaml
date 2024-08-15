@@ -2,12 +2,12 @@ app:
   host: "localhost"
   port: "7000"
 
-db:
+pg:
   host: "127.0.0.1"
-  port: "3306"
-  username: "root"
-  password: ""
-  name: "setup_go"
+  port: "5432"
+  username: "postgres"
+  password: "mysecretpassword"
+  name: "postgres"
 
 auth:
   access: ""

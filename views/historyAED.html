@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <title>ประวัติการใช้งาน AED</title>
+</head>
+<body>
+  <div class="">
+    <h1 class="text-2xl my-5 mx-4 text-center">ประวัติการแจ้งใช้งานเครื่อง AED</h1>
+  </div>
+
+  {{range $element := .historyData}}  
+  <div class="m-4">
+    <div class="max-w-md mx-auto my-3 bg-blue-50 rounded-xl overflow-hidden md:max-w-2xl">
+      <!-- <div class="md:flex"> -->
+        <div class="p-4">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+              <p class="block text-lg leading-tight font-medium text-black">วันที่: {{ $element.CreateAtFormate}}</p>
+            </div>
+            <div class="">
+              <p class="text-lg leading-tight font-medium text-blue-800 text-right">{{ $element.AedStatus }}</p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="">
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">สถานที่: {{ $element.AddressName }}</p>
+              <!-- <p class="block mt-1 text-xl leading-tight font-medium text-black">สถานะเครื่อง: ready</p> -->
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">Serial: {{ $element.SerialNumber }}</p>
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">ผู้แจ้ง: {{ $element.NameInformant }} <a href="tel:{{ $element.PhoneInformant }}">({{ $element.PhoneInformant }})</a></p>
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">โรงพยาบาล: {{ $element.HospitalName }} <a href="tel:{{ $element.HospitalPhone }}">({{ $element.HospitalPhone }})</a></p>
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">ชื่อผู้ป่วย: {{ $element.PatientName }} {{ $element.PatientLastname }}</p>
+              <p class="block mt-2 text-lg leading-tight font-medium text-black">เลขประจำตัวผู้ป่วย: {{ $element.IdNumber }}</p>
+              <div class="block mt-2">
+                <a class="text-lg leading-tight font-medium btn-map" target="_blank" href="https://www.google.com/maps/search/?api=1&query={{ $element.Location.latitude }},{{ $element.Location.longitude }}">Google map</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- </div> -->
+    </div>
+  </div>
+  {{end}}
+</body>
+</html>
+
+<style media="screen">
+.btn-map{
+  padding: 5px 10px;
+  background: rgba(30,64,175,0.8);
+  border-radius: 8px;
+  color: #fff;
+}
+.btn-map:hover{
+  padding: 5px 10px;
+  border: 1px solid rgba(30,64,175,0.8);
+  background: #eff6ff;
+  border-radius: 8px;
+  color: rgba(30,64,175,0.8);
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: underline;
+  color: rgba(30,64,175,0.8);
+}
+</style>

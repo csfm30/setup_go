@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"setup_go/database"
+	"setup_go/logs"
 	"setup_go/router"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
 	"github.com/spf13/viper"
 )
@@ -19,8 +21,14 @@ import (
 func main() {
 
 	initConfig()
+	initTimeZone()
 
+	if err := database.InitCaching(); err != nil {
+		logs.Error("Init caching fail:" + err.Error())
+	}
 	database.InitDatabase()
+
+	logs.Info("This is ENV " + os.Getenv("ENV"))
 
 	engine := html.New("./views", ".html")
 	engine.Reload(true)    // Optional. Default: false
@@ -34,13 +42,22 @@ func main() {
 	})
 	app.Use(cors.New())
 
+	if os.Getenv("ENV") == "uat" || os.Getenv("ENV") == "dev" {
+		app.Use(logger.New(logger.Config{
+			Format:     "${blue}${time} ${yellow}${status} - ${red}${latency} ${cyan}${method} ${path} ${green} ${ip} ${ua} ${reset}\n",
+			TimeFormat: "02-Jan-2006 15:04:05",
+			TimeZone:   "Asia/Bangkok",
+			Output:     os.Stdout,
+		}))
+	}
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("SetUp GO API " + os.Getenv("ENV") + " " + getVersionNumber())
 	})
 
-	port := ":7000"
+	port := viper.GetString("app.port")
 	if os.Getenv("ENV") == "dev" || os.Getenv("ENV") == "prolocal" {
-		port = ":7001"
+		port = viper.GetString("app.port_dev")
 	}
 	router.SetUpRouter(app)
 
@@ -51,7 +68,7 @@ func main() {
 }
 
 func initConfig() {
-
+	logs.Info("Init Config")
 	switch os.Getenv("ENV") {
 	case "":
 		os.Setenv("ENV", "dev")
@@ -59,7 +76,6 @@ func initConfig() {
 	default:
 		viper.SetConfigName("config")
 	}
-	fmt.Println("Testbug")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
@@ -76,7 +92,7 @@ func getVersionNumber() string {
 	version := "1.0.0"
 	inFile, err := os.Open("./Makefile")
 	if err != nil {
-		log.Error(err.Error() + `: ` + err.Error())
+		logs.Error(err.Error() + `: ` + err.Error())
 		return version
 	}
 	defer inFile.Close()
@@ -94,4 +110,13 @@ func getVersionNumber() string {
 	}
 
 	return version
+}
+
+func initTimeZone() {
+	ict, err := time.LoadLocation("Asia/Bangkok")
+	if err != nil {
+		panic(err)
+	}
+
+	time.Local = ict
 }

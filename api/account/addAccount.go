@@ -2,11 +2,11 @@ package account
 
 import (
 	"setup_go/database"
+	"setup_go/logs"
 	modelsPg "setup_go/models/pg"
 	"setup_go/utility"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 )
 
 // AddAccount
@@ -23,12 +23,12 @@ import (
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/login_by_username [post]
 func AddAccount(c *fiber.Ctx) error {
-	log.Info("AddAccount")
+	logs.Info("AddAccount")
 	db := database.DBConn
 
 	reqBody := new(modelsPg.Account)
 	if err := c.BodyParser(reqBody); err != nil {
-		log.Error(err)
+		logs.Error(err)
 		return utility.ResponseError(c, fiber.StatusBadRequest, err.Error())
 	}
 
@@ -37,7 +37,7 @@ func AddAccount(c *fiber.Ctx) error {
 	}
 
 	if err := db.Where("username = ?", reqBody.Username).FirstOrCreate(&reqBody).Error; err != nil {
-		log.Error(err)
+		logs.Error(err)
 		return utility.ResponseError(c, fiber.StatusOK, "create_fail")
 	}
 

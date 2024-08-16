@@ -6,6 +6,7 @@ import (
 
 	"time"
 
+	"setup_go/logs"
 	modelsPg "setup_go/models/pg"
 
 	"gorm.io/driver/postgres"
@@ -31,6 +32,7 @@ func (l SqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql st
 }
 
 func InitDatabase() {
+	logs.Info("Init Database")
 	fmt.Println("host", viper.GetString("pg.host"))
 	fmt.Println("host", viper.GetString("pg.host2"))
 	fmt.Println("host", viper.GetString("pg.host3"))
